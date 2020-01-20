@@ -3,6 +3,9 @@ const mysql = require('mysql');
 const inquirer = require('inquirer');
 const table = require('console.table');
 const colors = require('colors');
+var figlet = require('figlet');
+
+
 //Connection Preferences
 const connection = mysql.createConnection({
   host: "localhost",
@@ -20,9 +23,7 @@ const connection = mysql.createConnection({
 
 connection.connect(function (err) {
   if (err) throw err;
-  console.log("connected as id " + connection.threadId + "\n");
   viewHome();
-  start();
 });
 // function which prompts the user for what action they should take
 function start() {
@@ -79,7 +80,15 @@ function start() {
     });
 }
 function viewHome() {
-  console.log('\n Staff '.magenta.underline, ' Source '.cyan.underline, ' App \n '.blue.underline);
+  figlet('Staff Source App!', function(err, data) {
+    if (err) {
+        console.log('Something went wrong...');
+        console.dir(err);
+        return;
+    }
+    console.log(data)
+    start();
+});
 }
 //View all departments 
 function viewDept() {
@@ -88,7 +97,6 @@ function viewDept() {
     if (err) throw err;
     // Log all results of the SELECT statement
     console.table(res);
-    viewHome();
     start();
   });
 }
@@ -100,7 +108,6 @@ function viewRoles() {
     if (err) throw err;
     // Log all results of the SELECT statement
     console.table(res);
-    viewHome();
     start();
   });
 }
@@ -112,7 +119,6 @@ function viewStaff() {
     if (err) throw err;
     // Log all results of the SELECT statement
     console.table(res);
-    viewHome();
     start();
   });
 }
