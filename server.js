@@ -17,7 +17,7 @@ const connection = mysql.createConnection({
   user: "root",
 
   //Password
-  password: "",
+  password: "Biodesi647025!",
   database: "employees_db"
 });
 
@@ -80,7 +80,7 @@ function start() {
     });
 }
 function viewHome() {
-  figlet('Staff Source App!', function(err, data) {
+  figlet('Staff Source App', function(err, data) {
     if (err) {
         console.log('Something went wrong...');
         console.dir(err);
