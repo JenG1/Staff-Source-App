@@ -14,7 +14,7 @@ const connection = mysql.createConnection({
   user: "root",
 
   //Password
-  password: "Biodesi647025!",
+  password: "",
   database: "employees_db"
 });
 
@@ -352,15 +352,6 @@ function checkID() {
 
   });
 }
-
-
-// UPDATE people
-// SET has_pet = true, pet_name = "Franklin", pet_age = 2
-// WHERE name = "Peter";
-
-
-
-// DELETE FROM employee_roles WHERE id=12;
 
 
 
