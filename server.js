@@ -14,7 +14,7 @@ const connection = mysql.createConnection({
   user: "root",
 
   //Password
-  password: "",
+  password: "Biodesi647025!",
   database: "employees_db"
 });
 
@@ -38,6 +38,7 @@ function start() {
         "Add Employees",
         "Add Departments",
         "Add Roles",
+        "Remove Employees",
         "EXIT"
       ]
     })
@@ -67,6 +68,10 @@ function start() {
           addRole();
           break;
 
+        case "Remove Employees":
+          deleteStaff();
+          break;
+
         case "EXIT":
           connection.end();
           break;
@@ -74,12 +79,12 @@ function start() {
     });
 }
 function viewHome() {
-  console.log('\nStaff '.magenta.underline, ' Source '.cyan.underline, ' App \n'.blue.underline);
+  console.log('\n Staff '.magenta.underline, ' Source '.cyan.underline, ' App \n '.blue.underline);
 }
 //View all departments 
 function viewDept() {
   console.log("\n...Viewing All Departments...\n".cyan.underline);
-  connection.query("SELECT * FROM departments", function (err, res) {
+  connection.query("SELECT * FROM departments ORDER BY id", function (err, res) {
     if (err) throw err;
     // Log all results of the SELECT statement
     console.table(res);
@@ -90,7 +95,7 @@ function viewDept() {
 //View all roles including departments
 function viewRoles() {
   console.log("\n...Viewing All Roles...\n".cyan.underline);
-  var sql = "SELECT employee_roles.id AS id,employee_roles.title AS title,departments.dept_name AS department FROM employee_roles JOIN departments ON employee_roles.dept_id = departments.id";
+  var sql = "SELECT employee_roles.id AS id,employee_roles.title AS title,departments.dept_name AS department FROM employee_roles JOIN departments ON employee_roles.dept_id = departments.id ORDER BY employee_roles.id";
   connection.query(sql, function (err, res) {
     if (err) throw err;
     // Log all results of the SELECT statement
@@ -102,7 +107,8 @@ function viewRoles() {
 
 function viewStaff() {
   console.log("\n...Viewing All Staff...\n".cyan.underline);
-  connection.query("SELECT * FROM employees", function (err, res) {
+  var sql = "SELECT employees.id AS id,employees.first_name AS first,employees.last_name AS last,employee_roles.title AS title FROM employees JOIN employee_roles ON employees.role_id = employee_roles.id ORDER BY employees.id";
+  connection.query(sql, function (err, res) {
     if (err) throw err;
     // Log all results of the SELECT statement
     console.table(res);
@@ -111,7 +117,8 @@ function viewStaff() {
   });
 }
 
-function addStaff(){
+
+function addStaff() {
   console.log("\n...Adding Employee...\n".cyan.underline);
   inquirer
     .prompt([
@@ -126,7 +133,7 @@ function addStaff(){
         message: "What is their last name?"
       }
     ])
-    .then(function(answer) {
+    .then(function (answer) {
       // when finished prompting, insert a new item into the db with that info
 
       connection.query(
@@ -135,25 +142,25 @@ function addStaff(){
           first_name: answer.firstName,
           last_name: answer.lastName
         },
-        function(err) {
+        function (err) {
           if (err) throw err;
           let firstName = answer.firstName;
           let lastName = answer.lastName;
-          queryStaffRole(firstName,lastName)
+          queryStaffRole(firstName, lastName)
         }
       );
     });
 }
 
-function queryStaffRole(firstName,lastName) {
-  connection.query("SELECT * FROM employee_roles", function(err, results) {
+function queryStaffRole(firstName, lastName) {
+  connection.query("SELECT * FROM employee_roles", function (err, results) {
     if (err) throw err;
     inquirer
       .prompt([
         {
           name: "choice",
           type: "rawlist",
-          choices: function() {
+          choices: function () {
             let choiceArray = [];
             for (var i = 0; i < results.length; i++) {
               choiceArray.push(results[i].title);
@@ -163,10 +170,10 @@ function queryStaffRole(firstName,lastName) {
           message: "What is their Role?"
         }
       ])
-      .then(function(answer){
+      .then(function (answer) {
         let chosenRole;
-        for (var i = 0; i < results.length; i ++){
-          if (results[i].title === answer.choice){
+        for (var i = 0; i < results.length; i++) {
+          if (results[i].title === answer.choice) {
             chosenRole = results[i];
           }
         }
@@ -183,17 +190,17 @@ function queryStaffRole(firstName,lastName) {
               last_name: lastName
             },
           ],
-          function(error) {
+          function (error) {
             if (error) throw err;
             console.log("\nEmployee Added Successfully!\n".cyan.underline);
             start();
           }
-        );   
+        );
       });
   });
 }
 
-function addDept(){
+function addDept() {
   console.log("\n...Adding Department...\n".cyan.underline);
   inquirer
     .prompt([
@@ -203,14 +210,14 @@ function addDept(){
         message: "What is name of the department?"
       }
     ])
-    .then(function(answer) {
+    .then(function (answer) {
       // when finished prompting, insert a new item into the db with that info
       connection.query(
         "INSERT INTO departments SET ?",
         {
           dept_name: answer.deptName,
         },
-        function(err) {
+        function (err) {
           if (err) throw err;
           console.log("\nDepartment added successfully!\n".cyan.underline);
           start();
@@ -240,7 +247,7 @@ function addRole() {
         }
       }
     ])
-    .then(function(answer) {
+    .then(function (answer) {
       // when finished prompting, insert a new item into the db with that info
       connection.query(
         "INSERT INTO employee_roles SET ?",
@@ -248,7 +255,7 @@ function addRole() {
           title: answer.roleTitle,
           salary: answer.roleSalary
         },
-        function(err) {
+        function (err) {
           if (err) throw err;
           let roleTitle = answer.roleTitle;
           queryRoles(roleTitle)
@@ -258,14 +265,14 @@ function addRole() {
 }
 
 function queryRoles(roleTitle) {
-  connection.query("SELECT * FROM departments", function(err, results) {
+  connection.query("SELECT * FROM departments", function (err, results) {
     if (err) throw err;
     inquirer
       .prompt([
         {
           name: "choice",
           type: "rawlist",
-          choices: function() {
+          choices: function () {
             let choiceArray = [];
             for (var i = 0; i < results.length; i++) {
               choiceArray.push(results[i].dept_name);
@@ -275,10 +282,10 @@ function queryRoles(roleTitle) {
           message: "What Department?"
         }
       ])
-      .then(function(answer){
+      .then(function (answer) {
         let chosenRole;
-        for (var i = 0; i < results.length; i ++){
-          if (results[i].dept_name === answer.choice){
+        for (var i = 0; i < results.length; i++) {
+          if (results[i].dept_name === answer.choice) {
             chosenRole = results[i];
           }
         }
@@ -292,7 +299,7 @@ function queryRoles(roleTitle) {
               title: roleTitle
             }
           ],
-          function(error) {
+          function (error) {
             if (error) throw err;
             console.log("\nRole added successfully!\n".cyan.underline);
             start();
@@ -301,6 +308,51 @@ function queryRoles(roleTitle) {
       });
   });
 }
+
+function deleteStaff() {
+  checkID();
+  connection.query("SELECT * FROM employees", function (err, results) {
+    if (err) throw err;
+    inquirer
+      .prompt([
+        {
+          name: "staffID",
+          type: "input",
+          message: "What is the employee's ID?",
+          validate: function (value) {
+            if (isNaN(value) === false) {
+              return true;
+            }
+            return false;
+          }
+        }
+      ])
+      .then(function (answer) {
+        // when finished prompting, insert a new item into the db with that info
+        connection.query(
+          "DELETE SET FROM employees WHERE ?",
+          {
+            id: answer.staffID,
+          },
+          function (err) {
+            if (err) throw err;
+            console.log('\nThe Employee Was Removed - See the Employee Table\n'.cyan.underline);
+            start();
+          }
+        );
+      });
+  });
+}
+function checkID() {
+  var sql = "SELECT employees.id AS id,employees.first_name AS first,employees.last_name AS last,employee_roles.title AS title FROM employees JOIN employee_roles ON employees.role_id = employee_roles.id";
+  connection.query(sql, function (err, res) {
+    if (err) throw err;
+    // Log all results of the SELECT statement
+    console.table(res);
+
+  });
+}
+
 
 // UPDATE people
 // SET has_pet = true, pet_name = "Franklin", pet_age = 2

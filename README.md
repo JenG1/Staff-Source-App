@@ -20,6 +20,7 @@ inquirer
 console.table
 
 Getting Started
+
 The Staff-Source node.js app is maintained in Github with the SQL file to use in the MySQL workbench. You will need to add your password in the server.js file to run on your local machine
 var connection = mysql.createConnection({
 	host: 'localhost',
@@ -28,5 +29,7 @@ var connection = mysql.createConnection({
 	password: 'your password',
 	database:  'employees_db'
 });
+
+Please import SQL file [schema.sql] into mysql.
 
 #Acknowledgments ####StackOveflow
