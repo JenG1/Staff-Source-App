@@ -6,20 +6,21 @@ A command-line application that at a minimum allows the user to:
 
 - Displays Departments, Roles, and Employees
 - Add Departments, Roles, and Employees
-- Delete Departments, Roles, and Employees
+- Remove Employees
 
-Technologies Used
-The following technologies and tools were used
+# Technologies Used
+
+The following technologies and tools were used:
 JavaScript
 node.js
 MySQL Workbench
 
-The following npm packages were used
+The following npm packages were used:
 mysql
 inquirer
 console.table
 
-Getting Started
+# Getting Started
 
 The Staff-Source node.js app is maintained in Github with the SQL file to use in the MySQL workbench. You will need to add your password in the server.js file to run on your local machine
 var connection = mysql.createConnection({
@@ -32,4 +33,5 @@ var connection = mysql.createConnection({
 
 Please import SQL file [schema.sql] into mysql.
 
-#Acknowledgments ####StackOveflow
+# Acknowledgments 
+#### StackOveflow ####
